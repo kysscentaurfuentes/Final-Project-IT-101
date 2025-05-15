@@ -1,0 +1,248 @@
+<template>
+  <div class="feedback-container">
+    <aside class="side-navigation">
+      <NavigationBar />
+    </aside>
+    <main class="main-content">
+      <h2>Feedback</h2>
+      <p>
+        Your feedback is important to us! Please share your thoughts and
+        suggestions to help us improve the ICT Library Office services.
+      </p>
+
+      <div class="feedback-form">
+        <div class="form-group">
+          <label for="feedbackType">Feedback Type:</label>
+          <select v-model="feedbackType" id="feedbackType">
+            <option value="general">General Feedback</option>
+            <option value="website">App/Website Feedback</option>
+            <option value="computer">Computer/Software</option>
+            <option value="printing">Printing Services</option>
+            <option value="staff">Staff Interaction</option>
+            <option value="suggestion">Suggestion</option>
+            <option value="bug_report">Bug Report</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comment">Comments:</label>
+          <textarea
+            v-model="comment"
+            id="comment"
+            rows="5"
+            placeholder="Please provide your feedback here. Be as detailed as possible."
+          ></textarea>
+        </div>
+
+        <div class="form-group" v-if="feedbackType === 'bug_report'">
+          <label for="stepsToReproduce"
+            >Steps to Reproduce (if applicable):</label
+          >
+          <textarea
+            v-model="stepsToReproduce"
+            id="stepsToReproduce"
+            rows="3"
+            placeholder="Please describe the steps to reproduce the bug."
+          ></textarea>
+        </div>
+
+        <div
+          class="form-group"
+          v-if="feedbackType !== 'suggestion' && feedbackType !== 'bug_report'"
+        >
+          <label for="rating">Overall Rating (Optional):</label>
+          <div class="rating-stars">
+            <span
+              v-for="n in 5"
+              :key="n"
+              class="star"
+              :class="{ rated: n <= rating }"
+              @click="setRating(n)"
+              >★</span
+            >
+          </div>
+          <span v-if="rating > 0" class="rating-value"
+            >({{ rating }} out of 5)</span
+          >
+        </div>
+
+        <button @click="submitFeedback" :disabled="!comment">
+          Submit Feedback
+        </button>
+        <p v-if="submissionStatus" class="submission-status">
+          {{ submissionStatus }}
+        </p>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import NavigationBar from "./NavigationBar.vue"; // Import the NavigationBar component
+
+const router = useRouter();
+
+const feedbackType = ref("general");
+const comment = ref("");
+const stepsToReproduce = ref("");
+const rating = ref(0);
+const submissionStatus = ref("");
+
+const setRating = (newRating) => {
+  rating.value = newRating;
+};
+
+const submitFeedback = () => {
+  if (comment.value.trim() !== "") {
+    const feedbackData = {
+      type: feedbackType.value,
+      comment: comment.value,
+      stepsToReproduce: stepsToReproduce.value,
+      rating: rating.value,
+      timestamp: new Date().toISOString(), // Recommendation: Include timestamp
+      userId: "STUDENT_ID_PLACEHOLDER", // Recommendation: Include user identification (replace placeholder)
+      appVersion: "1.0.0", // Recommendation: Include app version for context
+      deviceInfo: navigator.userAgent, // Recommendation: Include device info for bug reports
+    };
+
+    // In a real application, you would send this data to your backend
+    console.log("Feedback Submitted:", feedbackData);
+    submissionStatus.value = "Thank you for your feedback!";
+    comment.value = "";
+    stepsToReproduce.value = "";
+    rating.value = 0;
+    setTimeout(() => {
+      submissionStatus.value = "";
+    }, 3000);
+  } else {
+    submissionStatus.value = "Please enter your feedback.";
+  }
+};
+</script>
+
+<style scoped>
+.feedback-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #e6f7ff; /* Light sky blue background */
+}
+
+.side-navigation {
+  background-color: #333;
+  color: white;
+  width: 200px; /* Adjust as needed */
+  padding: 20px;
+  z-index: 1;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  color: #007bff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+p {
+  margin-bottom: 15px;
+  color: #555;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 600px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.rating-stars {
+  display: inline-block;
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.star {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.star.rated {
+  color: gold;
+}
+
+.rating-value {
+  font-size: 0.9rem;
+  color: #777;
+  margin-left: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1e7e34;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.submission-status {
+  margin-top: 10px;
+  font-weight: bold;
+  color: green;
+  text-align: center;
+}
+</style>
