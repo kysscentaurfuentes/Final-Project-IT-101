@@ -1,23 +1,24 @@
 <template>
-  <div class="printing-services-container">
-    <aside class="side-navigation">
+  <div class="printing-services-container" :class="{ 'dark-mode': isDarkMode }">
+    <aside class="side-navigation" :class="{ 'dark-mode': isDarkMode }">
       <NavigationBar />
     </aside>
-    <main class="main-content">
+    <main class="main-content" :class="{ 'dark-mode': isDarkMode }">
       <h2>Printing Services</h2>
 
-      <div class="printing-info">
+      <div class="printing-info" :class="{ 'dark-mode': isDarkMode }">
         <p>
           Welcome to the ICT Library Office Printing Services. Please follow the
           instructions below to print your documents.
         </p>
 
-        <div class="printer-status">
+        <div class="printer-status" :class="{ 'dark-mode': isDarkMode }">
           <h3>Printer Status</h3>
           <div
             v-for="printer in printerStatuses"
             :key="printer.id"
             class="printer-item"
+            :class="{ 'dark-mode': isDarkMode }"
           >
             <span class="printer-name">{{ printer.name }}</span>
             <span
@@ -33,7 +34,7 @@
           <p v-if="!printerStatuses.length">No printers currently listed.</p>
         </div>
 
-        <div class="printing-instructions">
+        <div class="printing-instructions" :class="{ 'dark-mode': isDarkMode }">
           <h3>How to Print</h3>
           <ol>
             <li>Ensure your document is ready for printing.</li>
@@ -54,7 +55,11 @@
           </ol>
         </div>
 
-        <div class="payment-information" v-if="printingCostPerPage > 0">
+        <div
+          class="payment-information"
+          v-if="printingCostPerPage > 0"
+          :class="{ 'dark-mode': isDarkMode }"
+        >
           <h3>Printing Costs</h3>
           <p>Black and White: ₱{{ printingCostPerPage.toFixed(2) }} per page</p>
           <p v-if="printingCostPerPageColor > 0">
@@ -63,7 +68,7 @@
           <p>Payment can be made to the ICT Office staff after printing.</p>
         </div>
 
-        <div class="troubleshooting">
+        <div class="troubleshooting" :class="{ 'dark-mode': isDarkMode }">
           <h3>Troubleshooting</h3>
           <ul>
             <li>
@@ -81,7 +86,7 @@
           </ul>
         </div>
 
-        <div class="contact-support">
+        <div class="contact-support" :class="{ 'dark-mode': isDarkMode }">
           <h3>Need Help?</h3>
           <p>
             If you encounter any issues, please don't hesitate to ask the ICT
@@ -97,6 +102,9 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import NavigationBar from "./NavigationBar.vue"; // Import the NavigationBar component
+import { useDarkMode } from "../composables/useDarkMode"; // Import the composable
+
+const { isDarkMode } = useDarkMode(); // Get the isDarkMode ref
 
 const router = useRouter();
 
@@ -130,7 +138,13 @@ onMounted(() => {
 .printing-services-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5; /* Light gray background */
+  background-color: #fff; /* Force white background */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .printing-services-container {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
 }
 
 .side-navigation {
@@ -139,6 +153,12 @@ onMounted(() => {
   width: 200px; /* Adjust as needed */
   padding: 20px;
   z-index: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .side-navigation {
+  background-color: #252525;
+  color: #d4d4d4;
 }
 
 .main-content {
@@ -147,18 +167,33 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .main-content {
+  color: #d4d4d4;
 }
 
 h2 {
   color: #007bff;
   text-align: center;
   margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode h2 {
+  color: #6dd5ed;
 }
 
 .printing-info {
   margin-bottom: 20px;
   width: 90%;
   max-width: 700px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .printing-info {
+  color: #d4d4d4;
 }
 
 .printer-status {
@@ -168,12 +203,25 @@ h2 {
   border-radius: 4px;
   background-color: #fff;
   text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+body.dark-mode .printer-status {
+  background-color: #333;
+  color: #d4d4d4;
+  border-color: #555;
 }
 
 .printer-status h3 {
   color: #333;
   margin-top: 0;
   margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .printer-status h3 {
+  color: #f0f0f0;
 }
 
 .printer-item {
@@ -182,6 +230,12 @@ h2 {
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .printer-item {
+  border-bottom-color: #555;
+  color: #d4d4d4;
 }
 
 .printer-item:last-child {
@@ -191,6 +245,11 @@ h2 {
 .printer-name {
   font-weight: bold;
   color: #555;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .printer-name {
+  color: #f0f0f0;
 }
 
 .status {
@@ -201,13 +260,26 @@ h2 {
   color: green;
 }
 
+body.dark-mode .status.online {
+  color: #98c379;
+}
+
 .status.offline {
   color: red;
+}
+
+body.dark-mode .status.offline {
+  color: #e06c75;
 }
 
 .availability {
   color: #777;
   font-style: italic;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .availability {
+  color: #bbb;
 }
 
 .printing-instructions h3,
@@ -218,18 +290,87 @@ h2 {
   margin-top: 15px;
   margin-bottom: 10px;
   text-align: left;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .printing-instructions h3,
+body.dark-mode .payment-information h3,
+body.dark-mode .troubleshooting h3,
+body.dark-mode .contact-support h3 {
+  color: #f0f0f0;
 }
 
 .printing-instructions ol {
   margin-left: 20px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .printing-instructions ol {
+  color: #d4d4d4;
+}
+
+.payment-information {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+body.dark-mode .payment-information {
+  background-color: #333;
+  color: #d4d4d4;
+  border-color: #555;
 }
 
 .payment-information p {
   margin-bottom: 5px;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .payment-information p {
+  color: #d4d4d4;
 }
 
 .troubleshooting ul {
   list-style: disc;
   margin-left: 20px;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .troubleshooting ul {
+  color: #d4d4d4;
+}
+
+.contact-support {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+body.dark-mode .contact-support {
+  background-color: #333;
+  color: #d4d4d4;
+  border-color: #555;
+}
+
+.contact-support p {
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .contact-support p {
+  color: #d4d4d4;
 }
 </style>

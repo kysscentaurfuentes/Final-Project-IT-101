@@ -1,51 +1,103 @@
 <template>
-  <div class="check-availability-container">
-    <div class="main-menu-overlay"></div>
-    <aside class="side-navigation">
+  <div
+    class="check-availability-container"
+    :class="{ 'dark-mode': isDarkMode }"
+  >
+    <div
+      class="main-menu-overlay"
+      :class="{ 'dark-mode-overlay': isDarkMode }"
+    ></div>
+    <aside class="side-navigation" :class="{ 'dark-mode': isDarkMode }">
       <NavigationBar />
     </aside>
-    <main class="main-content">
+    <main class="main-content" :class="{ 'dark-mode': isDarkMode }">
       <h2>Check Library Visit Log</h2>
 
-      <div class="calendar-container">
+      <div class="calendar-container" :class="{ 'dark-mode-card': isDarkMode }">
         <div class="month-tabs">
           <div
             v-for="(month, index) in months"
             :key="index"
             class="month-tab"
-            :class="{ active: currentMonth === month }"
+            :class="{
+              active: currentMonth === month,
+              'dark-mode-tab': isDarkMode,
+              'dark-mode-tab-active': isDarkMode && currentMonth === month,
+            }"
             @click="showCalendar(month)"
           >
             {{ month }}
           </div>
         </div>
 
-        <div class="calendar-view">
-          <div class="month-navigation">
-            <button @click="prevYear" class="month-arrow">&lt;&lt;</button>
-            <button @click="prevMonth" class="month-arrow">&lt;</button>
-            <h3 class="month-header">
+        <div
+          class="calendar-view"
+          :class="{ 'dark-mode-calendar-view': isDarkMode }"
+        >
+          <div
+            class="month-navigation"
+            :class="{ 'dark-mode-navigation': isDarkMode }"
+          >
+            <button
+              @click="prevYear"
+              class="month-arrow"
+              :class="{ 'dark-mode-arrow': isDarkMode }"
+            >
+              &lt;&lt;
+            </button>
+            <button
+              @click="prevMonth"
+              class="month-arrow"
+              :class="{ 'dark-mode-arrow': isDarkMode }"
+            >
+              &lt;
+            </button>
+            <h3
+              class="month-header"
+              :class="{ 'dark-mode-header': isDarkMode }"
+            >
               <span
                 @click="showMonthSelect = !showMonthSelect"
                 class="month-select-trigger"
+                :class="{ 'dark-mode-select-trigger': isDarkMode }"
               >
                 {{ currentMonth }} {{ currentYear }}
               </span>
             </h3>
-            <button @click="nextMonth" class="month-arrow">&gt;</button>
-            <button @click="nextYear" class="month-arrow">&gt;&gt;</button>
+            <button
+              @click="nextMonth"
+              class="month-arrow"
+              :class="{ 'dark-mode-arrow': isDarkMode }"
+            >
+              &gt;
+            </button>
+            <button
+              @click="nextYear"
+              class="month-arrow"
+              :class="{ 'dark-mode-arrow': isDarkMode }"
+            >
+              &gt;&gt;
+            </button>
           </div>
-          <div v-if="showMonthSelect" class="month-dropdown">
+          <div
+            v-if="showMonthSelect"
+            class="month-dropdown"
+            :class="{ 'dark-mode-dropdown': isDarkMode }"
+          >
             <div
               v-for="(month, index) in months"
               :key="index"
               @click="selectMonth(month)"
               class="month-dropdown-item"
+              :class="{ 'dark-mode-dropdown-item': isDarkMode }"
             >
               {{ month }}
             </div>
           </div>
-          <div class="days-header">
+          <div
+            class="days-header"
+            :class="{ 'dark-mode-days-header': isDarkMode }"
+          >
             <div v-for="day in daysOfWeek" :key="day" class="day-header">
               {{ day }}
             </div>
@@ -62,6 +114,10 @@
                 'empty-day': !date,
                 'current-day': isCurrentDay(date),
                 'selected-day': isSelectedDate(date),
+                'dark-mode-date-cell': isDarkMode,
+                'dark-mode-empty-day': isDarkMode && !date,
+                'dark-mode-current-day': isDarkMode && isCurrentDay(date),
+                'dark-mode-selected-day': isDarkMode && isSelectedDate(date),
               }"
               @click="date && selectDate(date)"
             >
@@ -71,8 +127,12 @@
         </div>
       </div>
 
-      <div v-if="selectedDate" class="visit-log">
-        <p>
+      <div
+        v-if="selectedDate"
+        class="visit-log"
+        :class="{ 'dark-mode-visit-log': isDarkMode }"
+      >
+        <p :class="{ 'dark-mode-text': isDarkMode }">
           Visited Library at:
           {{
             selectedDate.toLocaleTimeString("en-US", {
@@ -83,7 +143,11 @@
         </p>
       </div>
 
-      <div v-if="errorMessage" class="error-message">
+      <div
+        v-if="errorMessage"
+        class="error-message"
+        :class="{ 'dark-mode-error-message': isDarkMode }"
+      >
         {{ errorMessage }}
       </div>
     </main>
@@ -94,6 +158,9 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import NavigationBar from "./NavigationBar.vue";
+import { useDarkMode } from "../composables/useDarkMode"; // Import the composable
+
+const { isDarkMode } = useDarkMode(); // Get the isDarkMode ref
 
 const selectedDate = ref(null);
 const errorMessage = ref("");
@@ -219,7 +286,6 @@ const selectMonth = (month) => {
 </script>
 
 <style scoped>
-/* ... (Combined styles from both components - adjust as needed) ... */
 .check-availability-container {
   display: flex;
   min-height: 100vh;
@@ -227,6 +293,13 @@ const selectMonth = (month) => {
   background-size: cover;
   background-position: center;
   position: relative;
+  background-color: #fff; /* Default light background */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .check-availability-container {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
 }
 
 .main-menu-overlay {
@@ -236,6 +309,11 @@ const selectMonth = (month) => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode .main-menu-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .side-navigation {
@@ -244,6 +322,12 @@ const selectMonth = (month) => {
   width: 200px;
   padding: 20px;
   z-index: 1;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .side-navigation {
+  background-color: #252525;
+  color: #d4d4d4;
 }
 
 .main-content {
@@ -253,6 +337,11 @@ const selectMonth = (month) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .main-content {
+  color: #d4d4d4;
 }
 
 h2 {
@@ -261,6 +350,12 @@ h2 {
   margin-bottom: 25px;
   font-size: 1.8rem;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  transition: color 0.3s ease;
+}
+
+body.dark-mode h2 {
+  color: #6dd5ed;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .calendar-container {
@@ -271,6 +366,13 @@ h2 {
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin-bottom: 25px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .calendar-container {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .month-tabs {
@@ -288,7 +390,7 @@ h2 {
   cursor: pointer;
   text-align: center;
   font-size: 0.9rem;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease, background-color 0.3s ease, color 0.3s ease;
 }
 
 .month-tab:hover {
@@ -301,8 +403,27 @@ h2 {
   font-weight: bold;
 }
 
+body.dark-mode .month-tab {
+  background-color: #3a86ff;
+  color: #f8f8f2;
+}
+
+body.dark-mode .month-tab:hover {
+  background-color: #2c69d9;
+}
+
+body.dark-mode .month-tab.active {
+  background-color: #1e3a8a;
+  color: #fff;
+}
+
 .calendar-view {
   width: 100%;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .calendar-view {
+  color: #f0f0f0;
 }
 
 .month-header {
@@ -311,12 +432,22 @@ h2 {
   color: #333;
   font-size: 1.3rem;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .month-header {
+  color: #f0f0f0;
 }
 
 .days-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .days-header {
+  color: #bbb;
 }
 
 .day-header {
@@ -324,6 +455,11 @@ h2 {
   font-weight: bold;
   color: #555;
   padding: 5px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .day-header {
+  color: #eee;
 }
 
 .dates-grid {
@@ -341,9 +477,11 @@ h2 {
   background-color: #f8f9fa;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease, background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
   position: relative;
   padding: 5px;
+  color: #333;
 }
 
 .date-cell:hover:not(.empty-day) {
@@ -354,6 +492,7 @@ h2 {
 .empty-day {
   background-color: transparent;
   cursor: default;
+  color: transparent;
 }
 
 .current-day {
@@ -364,6 +503,30 @@ h2 {
   background-color: #007bff;
   color: white;
   font-weight: bold;
+}
+
+body.dark-mode .date-cell {
+  background-color: #333;
+  color: #d4d4d4;
+}
+
+body.dark-mode .date-cell:hover:not(.empty-day) {
+  background-color: #555;
+}
+
+body.dark-mode .empty-day {
+  background-color: transparent;
+  color: transparent;
+}
+
+body.dark-mode .current-day {
+  border-color: #98c379;
+  color: #98c379; /* Keep text color for current day visible */
+}
+
+body.dark-mode .selected-day {
+  background-color: #3a86ff;
+  color: #f8f8f2;
 }
 
 .visit-log {
@@ -378,6 +541,15 @@ h2 {
   text-align: center;
   font-size: 1.1rem;
   color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .visit-log {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #f0f0f0;
+  border-color: #555;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .error-message {
@@ -389,6 +561,14 @@ h2 {
   max-width: 900px;
   width: 90%;
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+body.dark-mode .error-message {
+  background-color: #a71d2a;
+  color: #f8d7da;
+  border-color: #842029;
 }
 
 @media (max-width: 768px) {
@@ -404,6 +584,11 @@ h2 {
   align-items: center;
   margin-bottom: 15px;
   gap: 10px;
+  transition: color 0.3s ease;
+}
+
+body.dark-mode .month-navigation {
+  color: #f0f0f0;
 }
 
 .month-navigation button {
@@ -413,11 +598,20 @@ h2 {
   background-color: #007bff;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .month-navigation button {
+  background-color: #3a86ff;
+  color: #f8f8f2;
 }
 
 .month-navigation button:hover {
   background-color: #0056b3;
+}
+
+body.dark-mode .month-navigation button:hover {
+  background-color: #2c69d9;
 }
 
 .month-select-trigger {
@@ -426,6 +620,14 @@ h2 {
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+body.dark-mode .month-select-trigger {
+  background-color: #444;
+  color: #d4d4d4;
+  border-color: #666;
 }
 
 .month-dropdown {
@@ -443,16 +645,33 @@ h2 {
   max-height: 200px;
   overflow-y: auto;
   margin-top: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .month-dropdown {
+  background-color: #333;
+  color: #f0f0f0;
+  border-color: #555;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .month-dropdown-item {
   padding: 10px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
   text-align: center;
+}
+
+body.dark-mode .month-dropdown-item {
+  color: #d4d4d4;
 }
 
 .month-dropdown-item:hover {
   background-color: #f0f0f0;
+}
+
+body.dark-mode .month-dropdown-item:hover {
+  background-color: #555;
 }
 </style>

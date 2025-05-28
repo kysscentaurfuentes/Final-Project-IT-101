@@ -3,14 +3,21 @@
     <aside class="side-navigation" :class="{ 'dark-mode': isDarkMode }">
       <NavigationBar />
     </aside>
-    <main class="main-content" :class="{ 'dark-mode': isDarkMode }">
+    <main
+      class="main-content"
+      :class="['main-content', { 'dark-mode': isDarkMode }]"
+    >
       <h2>Settings</h2>
-      <div v-if="successMessage" class="success-message">
+      <div
+        v-if="successMessage"
+        class="success-message"
+        :class="{ 'dark-mode': isDarkMode }"
+      >
         <i class="fas fa-check-circle"></i>
         {{ successMessage }}
       </div>
 
-      <div class="theme-section">
+      <div class="theme-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>Theme</h3>
         <div class="form-group">
           <label for="darkMode">Dark Mode</label>
@@ -23,7 +30,7 @@
         </div>
       </div>
 
-      <div class="security-section">
+      <div class="security-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>Security</h3>
         <div class="form-group">
           <label for="twoFactorAuth">Enable 2-Step Verification</label>
@@ -36,13 +43,16 @@
         </div>
         <div class="form-group">
           <label for="changePassword">Change Password</label>
-          <button @click="showChangePasswordModal = true">
+          <button
+            @click="showChangePasswordModal = true"
+            :class="{ 'dark-mode': isDarkMode }"
+          >
             Change Password
           </button>
         </div>
       </div>
 
-      <div class="accessibility-section">
+      <div class="accessibility-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>Accessibility</h3>
         <div class="form-group">
           <label for="enableSound">Enable Sound (for QR Scan)</label>
@@ -67,7 +77,8 @@
           <select
             id="fontSize"
             v-model="selectedFontSize"
-            @change="updateSetting('fontSize', selectedFontSize)"
+            @change="updateFontSize($event.target.value)"
+            :class="{ 'dark-mode': isDarkMode }"
           >
             <option value="small">Small</option>
             <option value="medium">Medium</option>
@@ -76,7 +87,7 @@
         </div>
       </div>
 
-      <div class="notifications-section">
+      <div class="notifications-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>Notifications</h3>
         <div class="form-group">
           <label for="emailNotifications">Enable Email Notifications</label>
@@ -117,12 +128,13 @@
             @change="
               updateSetting('notificationSoundVolume', notificationSoundVolume)
             "
+            :class="{ 'dark-mode': isDarkMode }"
           />
           <span>{{ notificationSoundVolume }}%</span>
         </div>
       </div>
 
-      <div class="privacy-section">
+      <div class="privacy-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>Privacy</h3>
         <div class="form-group">
           <label for="shareUsageData">Share Anonymous Usage Data</label>
@@ -135,16 +147,28 @@
             "
           />
         </div>
+        <div class="form-group">
+          <button
+            @click="navigateToPrivacyTerms"
+            :class="{ 'dark-mode': isDarkMode }"
+          >
+            View Privacy Policy & Terms of Service
+          </button>
+        </div>
       </div>
 
-      <div class="about-section">
+      <div class="about-section" :class="{ 'dark-mode': isDarkMode }">
         <h3>About</h3>
         <p>Version: 1.0.0</p>
         <p>&copy; 2025 ICT Library Office Sign In. All rights reserved.</p>
       </div>
 
-      <div v-if="showChangePasswordModal" class="modal">
-        <div class="modal-content">
+      <div
+        v-if="showChangePasswordModal"
+        class="modal"
+        :class="{ 'dark-mode': isDarkMode }"
+      >
+        <div class="modal-content" :class="{ 'dark-mode': isDarkMode }">
           <h3>Change Password</h3>
           <div class="form-group">
             <label for="currentPassword">Current Password</label>
@@ -152,11 +176,17 @@
               type="password"
               id="currentPassword"
               v-model="currentPassword"
+              :class="{ 'dark-mode': isDarkMode }"
             />
           </div>
           <div class="form-group">
             <label for="newPassword">New Password</label>
-            <input type="password" id="newPassword" v-model="newPassword" />
+            <input
+              type="password"
+              id="newPassword"
+              v-model="newPassword"
+              :class="{ 'dark-mode': isDarkMode }"
+            />
           </div>
           <div class="form-group">
             <label for="confirmNewPassword">Confirm New Password</label>
@@ -164,11 +194,22 @@
               type="password"
               id="confirmNewPassword"
               v-model="confirmNewPassword"
+              :class="{ 'dark-mode': isDarkMode }"
             />
           </div>
           <div class="modal-actions">
-            <button @click="updatePassword">Update Password</button>
-            <button @click="showChangePasswordModal = false">Cancel</button>
+            <button
+              @click="updatePassword"
+              :class="{ 'dark-mode': isDarkMode }"
+            >
+              Update Password
+            </button>
+            <button
+              @click="showChangePasswordModal = false"
+              :class="{ 'dark-mode': isDarkMode }"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
@@ -177,12 +218,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import axios from "axios";
-import NavigationBar from "./NavigationBar.vue"; // Import the NavigationBar component
+import NavigationBar from "./NavigationBar.vue";
+import { useRouter, useRoute } from "vue-router";
+import { useDarkMode } from "../composables/useDarkMode";
+import { useFontSize } from "../composables/useFontSize"; // Import the font size composable
 
-// Theme
-const isDarkMode = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+const { isDarkMode } = useDarkMode();
+const { fontSize, setFontSize, fontSizeClass } = useFontSize(); // Get the font size state and setter
 
 // Security
 const twoFactorEnabled = ref(false);
@@ -190,7 +237,7 @@ const twoFactorEnabled = ref(false);
 // Accessibility
 const soundEnabled = ref(false);
 const vibrationEnabled = ref(false);
-const selectedFontSize = ref("medium");
+const selectedFontSize = ref(fontSize.value); // Initialize with the global state
 
 // Notifications
 const emailNotificationsEnabled = ref(false);
@@ -208,38 +255,35 @@ const currentPassword = ref("");
 const newPassword = ref("");
 const confirmNewPassword = ref("");
 
+const navigateToPrivacyTerms = () => {
+  sessionStorage.setItem("previousRoute", route.name);
+  router.push({ name: "PrivacyTerms" });
+};
+
 const updateSetting = async (key, value) => {
   successMessage.value = "";
   try {
     const response = await axios.post(
       "/api/user/settings/update",
       { [key]: value },
-      {
-        // headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
-      }
+      {}
     );
     if (response.data.success) {
       successMessage.value = `Setting "${key}" updated successfully!`;
-      // Optionally update local storage or Vuex store
     } else {
       console.error(
         `Failed to update setting "${key}":`,
         response.data.message
       );
-      // Optionally display a more subtle error message if needed
     }
   } catch (error) {
     console.error(`Error updating setting "${key}":`, error);
-    // Optionally display a more subtle error message if needed
   }
 };
 
 const updateThemeSetting = (key, value) => {
+  isDarkMode.value = value;
   updateSetting(key, value);
-  // Apply dark mode class to the body for global effect
-  document.body.classList.toggle("dark-mode", value);
-  // Optionally save theme preference to local storage
-  localStorage.setItem("darkMode", value);
 };
 
 const updatePassword = async () => {
@@ -251,9 +295,7 @@ const updatePassword = async () => {
           currentPassword: currentPassword.value,
           newPassword: newPassword.value,
         },
-        {
-          // headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
-        }
+        {}
       );
       if (response.data.success) {
         successMessage.value = "Password updated successfully!";
@@ -263,36 +305,30 @@ const updatePassword = async () => {
         confirmNewPassword.value = "";
       } else {
         console.error("Failed to update password:", response.data.message);
-        // Optionally display an error message to the user
       }
     } catch (error) {
       console.error("Error updating password:", error);
-      // Optionally display an error message to the user
     }
   } else {
     console.error("New passwords do not match.");
-    // Optionally display an error message to the user
   }
 };
 
-onMounted(async () => {
-  // Load theme preference from local storage
-  const storedDarkMode = localStorage.getItem("darkMode");
-  if (storedDarkMode === "true") {
-    isDarkMode.value = true;
-    document.body.classList.add("dark-mode");
-  }
+const updateFontSize = (size) => {
+  selectedFontSize.value = size; // Update the local selected value
+  setFontSize(size); // Update the global font size state
+};
 
+onMounted(async () => {
   try {
-    const response = await axios.get("/api/user/settings", {
-      // headers: { 'Authorization': `Bearer ${localStorage.getItem('userToken')}` }
-    });
+    const response = await axios.get("/api/user/settings", {});
     if (response.data.success) {
       const settings = response.data.settings || {};
       twoFactorEnabled.value = settings.twoFactorEnabled || false;
       soundEnabled.value = settings.soundEnabled || false;
       vibrationEnabled.value = settings.vibrationEnabled || false;
       selectedFontSize.value = settings.fontSize || "medium";
+      setFontSize(selectedFontSize.value); // Initialize global state on mount
       emailNotificationsEnabled.value =
         settings.emailNotificationsEnabled || false;
       pushNotificationsEnabled.value =
@@ -302,10 +338,9 @@ onMounted(async () => {
           ? settings.notificationSoundVolume
           : 50;
       shareUsageDataEnabled.value = settings.shareUsageDataEnabled || false;
-      isDarkMode.value = settings.darkMode || false;
-      if (isDarkMode.value) {
-        document.body.classList.add("dark-mode");
-        localStorage.setItem("darkMode", "true");
+
+      if (settings.darkMode !== undefined) {
+        isDarkMode.value = settings.darkMode;
       }
     } else {
       console.error("Failed to load settings:", response.data.message);
@@ -541,5 +576,35 @@ button:hover {
 
 .main-content.dark-mode .modal-actions button {
   color: #f8f8f2;
+}
+
+.font-small {
+  font-size: 12px;
+}
+
+.font-medium {
+  font-size: 16px;
+}
+
+.font-large {
+  font-size: 20px;
+}
+
+.font-small h2,
+.font-small h3,
+.font-small label,
+.font-small button,
+.font-small select,
+.font-small input {
+  font-size: 0.85rem;
+}
+
+.font-large h2,
+.font-large h3,
+.font-large label,
+.font-large button,
+.font-large select,
+.font-large input {
+  font-size: 1.25rem;
 }
 </style>

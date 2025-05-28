@@ -3,7 +3,7 @@
     <div class="signup-overlay"></div>
     <div class="logo-container">
       <img
-        src="../assets/images/Caraga_State_University_Logo.png"
+        src="../assets/images/caraga_State_University_Logo.png"
         alt="CSU Logo"
         class="csu-logo"
       />
@@ -18,10 +18,10 @@
 
       <div class="form-group">
         <label for="role">Register As</label>
-        <select id="role" v-model="selectedRole" required>
-          <option value="student">Student</option>
-          <option value="employee">Employee</option>
-          <option value="admin">Admin</option>
+        <select id="role" v-model="selectedRole" required class="black-font">
+          <option value="student" class="black-font">Student</option>
+          <option value="employee" class="black-font">Employee</option>
+          <option value="admin" class="black-font">Admin</option>
         </select>
       </div>
 
@@ -121,9 +121,9 @@
         />
         <label for="privacyTerms">
           I agree to the
-          <router-link to="/privacy-terms" target="_blank"
-            >Privacy Policy & Terms</router-link
-          >
+          <router-link to="/privacy-terms">
+            Privacy Policy & Terms of conditions
+          </router-link>
         </label>
       </div>
 
@@ -234,7 +234,7 @@ const register = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url("../assets/images/csu library entrance (3).jpg"); /* Changed background image */
+  background-image: url("../assets/images/CSU Library entrance.jpg"); /* Changed background image */
   background-size: cover; /* Make the background image cover the entire container */
   background-position: center;
   overflow-y: auto;
@@ -296,7 +296,7 @@ const register = async () => {
 
 h2 {
   font-size: 2rem;
-  color: black; /* Black font */
+  color: white; /* White font */
   margin-bottom: 1.5rem;
 }
 
@@ -308,7 +308,7 @@ h2 {
 label {
   display: block;
   font-size: 0.9rem;
-  color: black; /* Black font */
+  color: white; /* White font */
   margin-bottom: 0.5rem;
 }
 
@@ -322,15 +322,15 @@ input[type="tel"] {
   padding: 1rem;
   border: none;
   border-radius: 0.5rem;
-  background-color: rgba(220, 220, 220, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
   box-shadow: inset 0 0.1rem 0.3rem rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
   font-size: 1rem;
-  color: black; /* Black font */
+  color: white; /* White font */
 }
 
 ::placeholder {
-  color: white; /* Black placeholder text */
+  color: rgba(255, 255, 255, 0.7); /* Light white placeholder text */
 }
 
 select:focus,
@@ -340,7 +340,7 @@ input[type="password"]:focus,
 input[type="date"]:focus,
 input[type="tel"]:focus {
   outline: none;
-  box-shadow: 0 0 0.5rem #64b5f6; /* Glowing effect on focus */
+  box-shadow: 0 0 0.5rem #bbdefb; /* Light blue glowing effect on focus */
 }
 
 .captcha-container {
@@ -354,10 +354,11 @@ input[type="tel"]:focus {
   appearance: none;
   width: 1.2rem;
   height: 1.2rem;
-  border: 0.1rem solid #64b5f6;
+  border: 0.1rem solid #bbdefb;
   border-radius: 0.2rem;
   cursor: pointer;
   position: relative;
+  background-color: white; /* White checkbox background */
 }
 
 .captcha-container input[type="checkbox"]:checked::before {
@@ -369,11 +370,11 @@ input[type="tel"]:focus {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: black;
+  color: #2196f3; /* Blue checkmark */
 }
 
 .captcha-container label {
-  color: white; /* Black font */
+  color: white; /* White font */
 }
 
 .privacy-agreement {
@@ -387,10 +388,11 @@ input[type="tel"]:focus {
   appearance: none;
   width: 1.2rem;
   height: 1.2rem;
-  border: 0.1rem solid black;
+  border: 0.1rem solid #bbdefb;
   border-radius: 0.2rem;
   cursor: pointer;
   position: relative;
+  background-color: white; /* White checkbox background */
 }
 
 .privacy-agreement input[type="checkbox"]:checked::before {
@@ -402,7 +404,7 @@ input[type="tel"]:focus {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: black;
+  color: #2196f3; /* Blue checkmark */
 }
 
 .privacy-agreement label {
@@ -410,7 +412,7 @@ input[type="tel"]:focus {
 }
 
 .privacy-agreement label a {
-  color: teal;
+  color: #bbdefb;
   text-decoration: underline;
 }
 
@@ -423,8 +425,12 @@ input[type="tel"]:focus {
   padding: 1rem;
   border: none;
   border-radius: 0.5rem;
-  background: linear-gradient(to right, #64b5f6, #42a5f5); /* Gradient button */
-  color: white;
+  background: linear-gradient(
+    to right,
+    #bbdefb,
+    #64b5f6
+  ); /* Light blue gradient button */
+  color: #333; /* Dark text on button */
   font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
@@ -434,12 +440,12 @@ input[type="tel"]:focus {
 
 .signup-button:hover {
   transform: scale(1.02);
-  box-shadow: 0 0 0.5rem #64b5f6; /* Glowing effect on hover */
+  box-shadow: 0 0 0.5rem #bbdefb; /* Light blue glowing effect on hover */
 }
 
 .signup-button:disabled {
-  background: #ccc;
-  color: #666;
+  background: #eee;
+  color: #999;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -448,23 +454,23 @@ input[type="tel"]:focus {
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
-  color: black; /* Black font */
+  color: white; /* White font */
 }
 
 .form-links a {
-  color: lightblue;
+  color: #bbdefb;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .form-links a:hover {
-  color: teal;
+  color: #e0f7fa;
   text-decoration: underline;
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #ffdde0;
+  color: #d32f2f;
   padding: 0.8rem;
   border-radius: 0.4rem;
   margin-bottom: 1rem;
@@ -486,6 +492,12 @@ input[type="tel"]:focus {
   80% {
     transform: translateX(0.5rem);
   }
+}
+
+/* Specific style for the select options to be black */
+.black-font,
+.black-font option {
+  color: black !important;
 }
 
 /* Background Animation (Example - Simple Gradient) */

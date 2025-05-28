@@ -3,7 +3,7 @@
     <nav class="admin-nav-bar">
       <ul>
         <li>
-          <router-link to="/admin/dashboard" active-class="active"
+          <router-link to="/admin" active-class="active"
             >Dashboard Home</router-link
           >
         </li>

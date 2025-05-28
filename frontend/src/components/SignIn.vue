@@ -42,9 +42,13 @@
         Sign In
       </button>
       <div class="form-links">
-        <router-link to="/signup">Don't have an account? Sign Up</router-link>
+        <router-link to="/signup" class="white-link"
+          >Don't have an account? Sign Up</router-link
+        >
         <span> | </span>
-        <router-link to="/help-login">Can't log in?</router-link>
+        <router-link to="/help-login" class="white-link"
+          >Can't log in?</router-link
+        >
       </div>
     </div>
   </div>
@@ -141,14 +145,29 @@ const signIn = async () => {
   }
 };
 </script>
-
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+</style>
 <style scoped>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 .signin-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url("../assets/images/CSU Library entrance.jpg"); /* Set background image */
+  background-image: url("../assets/images/csu admin.jpg"); /* Set background image */
   background-size: cover;
   background-position: center;
   overflow: hidden;
@@ -164,6 +183,7 @@ const signIn = async () => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4); /* Adjust opacity for darkness */
+  z-index: 0;
 }
 
 .signin-form {
@@ -333,5 +353,14 @@ select option {
 .remember-me input[type="checkbox"] {
   width: auto;
   margin-right: 0.5rem;
+}
+
+/* Specific style for the links to be white */
+.white-link {
+  color: white !important;
+}
+
+.white-link:hover {
+  color: #eee !important;
 }
 </style>
